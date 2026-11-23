@@ -69,6 +69,54 @@ res.status(201).json({
 
 
 
+// Uppdaterar en produkt
+app.put("/api/products/:id", (req, res) => {
+    const id = Number(req.params.id);
+    const { name, price, sku, description } = req.body;
+
+    // Kontrollerar produktens ID
+if (!Number.isInteger(id) || id <= 0) {
+    return res.status(400).json({
+        error: "Ogiltigt produkt-ID"
+    });
+}
+
+// Kontrollerar produktuppgifterna
+if (
+    typeof name !== "string" || !name.trim() ||
+    typeof sku !== "string" || !sku.trim() ||
+    typeof description !== "string" || !description.trim() ||
+    typeof price !== "number" || !Number.isFinite(price) || price <= 0
+) {
+    return res.status(400).json({
+        error: "Ogiltiga produktuppgifter"
+    });
+}
+
+// Uppdaterar produkten i databasen
+const result = db.prepare(
+    "UPDATE products SET name = ?, price = ?, sku = ?, description = ? WHERE id = ?"
+).run(name, price, sku, description, id);
+
+// Kontrollerar om produkten finns
+if (result.changes === 0) {
+    return res.status(404).json({
+        error: "Produkten hittades inte"
+    });
+}
+
+// Skickar tillbaka den uppdaterade produkten
+res.status(200).json({
+    id,
+    name,
+    price,
+    sku,
+    description
+});
+});
+
+
+
 
 
 
