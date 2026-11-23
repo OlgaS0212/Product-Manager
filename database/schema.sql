@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS products (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    price INTEGER NOT NULL CHECK(price > 0),
+    sku TEXT NOT NULL UNIQUE,
+    description TEXT NOT NULL
+);
