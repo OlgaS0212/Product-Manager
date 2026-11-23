@@ -3,6 +3,7 @@ import db from "./db.js";
 
 const app = express();
 
+app.use(express.json());
 app.use(express.static("public"));
 
 
@@ -12,6 +13,15 @@ app.get("/api/products", (req, res) => {
     const products = db.prepare("SELECT * FROM products").all();
 
     res.json(products);
+});
+
+
+// Tar emot en ny produkt
+app.post("/api/products", (req, res) => {
+    
+    const { name, price, sku, description } = req.body;
+    console.log(name, price, sku, description);
+
 });
 
 
