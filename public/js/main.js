@@ -24,6 +24,29 @@ const priceCell = document.createElement("td");
 priceCell.textContent = product.price;
 row.appendChild(priceCell);
 
+// Skapar en knapp för att ta bort produkten
+const deleteCell = document.createElement("td");
+const deleteButton = document.createElement("button");
+
+deleteButton.textContent = "✕";
+
+// Lyssnar på klick på raderingsknappen
+deleteButton.addEventListener("click", async () => {
+    console.log("Ta bort produkt:", product.id);
+// Skickar en DELETE-begäran till backend
+const response = await fetch(`/api/products/${product.id}`, {
+    method: "DELETE"
+
+});
+// Tar bort raden när produkten har raderats
+if (response.status === 204) {
+    row.remove();
+}
+});
+
+deleteCell.appendChild(deleteButton);
+row.appendChild(deleteCell);
+
 // Lägger till raden i tabellen
 tableBody.appendChild(row);
 }
