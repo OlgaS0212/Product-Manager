@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(express.static("public"));
 
 
-
+///Read (GET) (Получать товары из базы)///
 // Hämtar alla produkter från databasen
 app.get("/api/products", (req, res) => {
     const products = db.prepare("SELECT * FROM products").all();
@@ -15,7 +15,7 @@ app.get("/api/products", (req, res) => {
     res.json(products);
 });
 
-
+///Create (POST) (Сохранять новый товар)///
 // Tar emot en ny produkt
 app.post("/api/products", (req, res) => {
 
@@ -68,13 +68,14 @@ res.status(201).json({
 });
 
 
+///Update (PUT)  (Изменять товар)///
 
 // Uppdaterar en produkt
 app.put("/api/products/:id", (req, res) => {
     const id = Number(req.params.id);
     const { name, price, sku, description } = req.body;
 
-    // Kontrollerar produktens ID
+// Kontrollerar produktens ID
 if (!Number.isInteger(id) || id <= 0) {
     return res.status(400).json({
         error: "Ogiltigt produkt-ID"
@@ -115,8 +116,34 @@ res.status(200).json({
 });
 });
 
+///DELETE (Удалять товар)///
+// Tar bort en produkt
+app.delete("/api/products/:id", (req, res) => {
+    const id = Number(req.params.id);
 
+// Kontrollerar produktens ID
+if (!Number.isInteger(id) || id <= 0) {
+    return res.status(400).json({
+        error: "Ogiltigt produkt-ID"
+    });
+}
 
+// Tar bort produkten från databasen
+const result = db.prepare(
+    "DELETE FROM products WHERE id = ?"
+).run(id);
+
+// Kontrollerar om produkten finns
+if (result.changes === 0) {
+    return res.status(404).json({
+        error: "Produkten hittades inte"
+    });
+}
+
+// Bekräftar att produkten har tagits bort
+res.sendStatus(204);
+    
+});
 
 
 
