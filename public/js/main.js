@@ -33,6 +33,8 @@ deleteButton.textContent = "✕";
 // Lyssnar på klick på raderingsknappen
 deleteButton.addEventListener("click", async () => {
     console.log("Ta bort produkt:", product.id);
+try {
+
 // Skickar en DELETE-begäran till backend
 const response = await fetch(`/api/products/${product.id}`, {
     method: "DELETE"
@@ -41,6 +43,11 @@ const response = await fetch(`/api/products/${product.id}`, {
 // Tar bort raden när produkten har raderats
 if (response.status === 204) {
     row.remove();
+}else {
+    alert("Det gick inte att ta bort produkten.");
+}
+} catch (error) {
+    alert("Kunde inte ansluta till servern.");
 }
 });
 
@@ -65,7 +72,7 @@ form.addEventListener("submit", async (event) => {
 
     console.log(product);
 
-
+try {
 // Skickar produkten till backend
 const response = await fetch("/api/products", {
     method: "POST",
@@ -81,6 +88,11 @@ if (response.status === 201) {
 
     laggTillRad(newProduct);
     form.reset();
+} else {
+    alert("Det gick inte att lägga till produkten.");
+}
+} catch (error) {
+    alert("Kunde inte ansluta till servern.");
 }
 
 });
@@ -88,7 +100,14 @@ if (response.status === 201) {
 
 // Hämtar alla produkter från backend med fetch
 async function loadProducts() {
+    try {
     const response = await fetch("/api/products");
+
+// Kontrollerar om begäran lyckades
+if (!response.ok) {
+    throw new Error("Kunde inte hämta produkterna");
+}
+
     const products = await response.json();
 
 
@@ -98,6 +117,9 @@ tableBody.replaceChildren();
 products.forEach((product) => {
     laggTillRad(product);
 });
+} catch (error) {
+    alert("Kunde inte hämta produkterna.");
+}
 }
 
 // Hämtar produkterna när sidan laddas
