@@ -1,6 +1,33 @@
 
 const form = document.querySelector("form");
 
+// Hämtar tabellens tbody från HTML
+const tableBody = document.querySelector("#productTableBody");
+
+
+// Skapar en ny rad i produkttabellen
+function laggTillRad(product) {
+    const row = document.createElement("tr");
+
+// Skapar en cell för produktnamnet
+const nameCell = document.createElement("td");
+nameCell.textContent = product.name;
+row.appendChild(nameCell);
+
+// Skapar en cell för SKU
+const skuCell = document.createElement("td");
+skuCell.textContent = product.sku;
+row.appendChild(skuCell);
+
+// Skapar en cell för priset
+const priceCell = document.createElement("td");
+priceCell.textContent = product.price;
+row.appendChild(priceCell);
+
+// Lägger till raden i tabellen
+tableBody.appendChild(row);
+}
+
 form.addEventListener("submit", (event) => {
     event.preventDefault();
 
@@ -15,3 +42,21 @@ form.addEventListener("submit", (event) => {
 
     console.log(product);
 });
+
+
+// Hämtar alla produkter från backend med fetch
+async function loadProducts() {
+    const response = await fetch("/api/products");
+    const products = await response.json();
+
+
+// Visar alla produkter i tabellen
+tableBody.replaceChildren();
+
+products.forEach((product) => {
+    laggTillRad(product);
+});
+}
+
+// Hämtar produkterna när sidan laddas
+loadProducts();
