@@ -28,7 +28,7 @@ row.appendChild(priceCell);
 tableBody.appendChild(row);
 }
 
-form.addEventListener("submit", (event) => {
+form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const formData = new FormData(event.target);
@@ -41,6 +41,25 @@ form.addEventListener("submit", (event) => {
     };
 
     console.log(product);
+
+
+// Skickar produkten till backend
+const response = await fetch("/api/products", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify(product)
+});
+
+// Kontrollerar om produkten har skapats
+if (response.status === 201) {
+    const newProduct = await response.json();
+
+    laggTillRad(newProduct);
+    form.reset();
+}
+
 });
 
 
