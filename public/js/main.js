@@ -27,8 +27,7 @@ row.appendChild(priceCell);
 // Skapar en knapp för att ta bort produkten
 const deleteCell = document.createElement("td");
 const deleteButton = document.createElement("button");
-
-deleteButton.textContent = "✕";
+deleteButton.textContent = "🗑︎";
 
 // Lyssnar på klick på raderingsknappen
 deleteButton.addEventListener("click", async () => {
