@@ -123,3 +123,6 @@ products.forEach((product) => {
 
 // Hämtar produkterna när sidan laddas
 loadProducts();
+
+
+//setInterval(loadProducts, 3000);

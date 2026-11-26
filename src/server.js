@@ -115,7 +115,43 @@ res.status(200).json({
     description
 });
 });
+// PATCH – ändrar bara priset på en produkt
+app.patch("/api/products/:id", (req, res) => {
+    const id = Number(req.params.id);
+    const { price } = req.body;
 
+    // Kontrollerar produktens ID
+    if (!Number.isInteger(id) || id <= 0) {
+        return res.status(400).json({
+            error: "Ogiltigt produkt-ID"
+        });
+    }
+
+    // Kontrollerar priset
+    if (typeof price !== "number" || !Number.isFinite(price) || price <= 0) {
+        return res.status(400).json({
+            error: "Ogiltigt pris"
+        });
+    }
+
+    // Uppdaterar bara priset i databasen
+    const result = db.prepare(
+        "UPDATE products SET price = ? WHERE id = ?"
+    ).run(price, id);
+
+    if (result.changes === 0) {
+        return res.status(404).json({
+            error: "Produkten hittades inte"
+        });
+    }
+
+    // Hämtar den uppdaterade produkten
+    const product = db.prepare(
+        "SELECT * FROM products WHERE id = ?"
+    ).get(id);
+
+    res.status(200).json(product);
+});
 ///DELETE (Удалять товар)///
 // Tar bort en produkt
 app.delete("/api/products/:id", (req, res) => {
